@@ -133,8 +133,8 @@ func headline(root string, r explain.Reason) string {
 		return "the package is outside any module, GOPATH or GOROOT; go test never caches it"
 	case explain.KindTestFailed:
 		return "the test failed; failed results are never cached"
-	case explain.KindPreviousRunFailed:
-		return "the last recorded run failed, so there was no passing result to reuse"
+	case explain.KindNoEarlierResult:
+		return "the last recorded run stored no result (the test failed or caching was disabled), so there was nothing to reuse"
 	case explain.KindBuildFailed:
 		return "the build failed"
 	case explain.KindInputTooNew:
@@ -274,8 +274,10 @@ func displayPath(root, path string) string {
 func writeNote(w io.Writer, n explain.Note) {
 	switch n.Kind {
 	case explain.NoteNoPreviousState:
-		fmt.Fprintf(w, "note: no earlier state at %s. Either this is the first run with uncached, or the state\n"+
-			"      (kept inside GOCACHE by default) was not restored between runs.\n", n.Detail)
+		fmt.Fprintf(w, "note: no earlier state at\n"+
+			"        %s\n"+
+			"      Either this is the first run with uncached, or the state (kept inside GOCACHE\n"+
+			"      by default) was not restored between runs.\n", n.Detail)
 	case explain.NoteTimestampsOnly:
 		fmt.Fprintf(w, "note: %d %s missed the cache only because file mtimes changed while the content stayed\n"+
 			"      the same. A fresh git checkout does exactly this. Run `uncached restore-mtime` before\n"+

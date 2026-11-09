@@ -152,8 +152,8 @@ func TestRestoreSelectedPaths(t *testing.T) {
 	if res.Commits != 3 {
 		t.Errorf("read %d commits, want 3", res.Commits)
 	}
-	if len(res.Skipped) != 2 {
-		t.Errorf("skipped = %v, want the untracked and the outside path", res.Skipped)
+	if len(res.Skipped) != 1 || res.Outside != 1 {
+		t.Errorf("skipped = %v, outside = %d; want the untracked path skipped and one outside", res.Skipped, res.Outside)
 	}
 	if res.Shallow {
 		t.Error("a full repository reported as shallow")
@@ -236,11 +236,15 @@ func TestReadLog(t *testing.T) {
 func TestSelectTargets(t *testing.T) {
 	root := filepath.FromSlash("/repo")
 	tracked := []string{"a/b/c.txt", "a/b/d/e.txt", "a/bb.txt", "z.txt"}
-	files, dirs, skipped := selectTargets(root, tracked, Options{Paths: []string{
+	files, dirs, skipped, outside := selectTargets(root, tracked, Options{Paths: []string{
 		filepath.FromSlash("/repo/a/b"),
 		filepath.FromSlash("/repo/z.txt"),
 		filepath.FromSlash("/repo/a/missing"),
+		filepath.FromSlash("/tmp/x"),
 	}})
+	if outside != 1 {
+		t.Errorf("outside = %d, want 1", outside)
+	}
 	if want := []string{"a/b/c.txt", "a/b/d/e.txt", "z.txt"}; !slices.Equal(files, want) {
 		t.Errorf("files = %v, want %v", files, want)
 	}

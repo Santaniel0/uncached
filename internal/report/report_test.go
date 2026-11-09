@@ -128,7 +128,7 @@ func TestTextDiffHeaderAndOtherReasons(t *testing.T) {
 		"  no earlier record of this test to compare with\n",
 		"  nothing changed, but the cached result is gone: x (cache not restored, trimmed, or evicted)\n",
 		"  test inputs changed, test binary unchanged: no earlier record\n",
-		"note: no earlier state at /c/state.json.",
+		"note: no earlier state at\n        /c/state.json\n",
 	} {
 		if !strings.Contains(buf.String(), want) {
 			t.Errorf("missing %q in:\n%s", want, buf.String())

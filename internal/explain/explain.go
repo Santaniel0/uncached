@@ -257,8 +257,8 @@ func (r Run) binaryReason(p ids.ImportPath, prev *state.TestRecord, lookups []id
 		return Reason{Kind: KindBinaryChanged, Detail: "the current fingerprint could not be computed"}
 	}
 	diffs := fingerprint.Compare(prev.Side(r.Prev.Files), cur.Side(r.CurrentFiles))
-	if len(diffs) == 0 && prev.Failed {
-		return Reason{Kind: KindPreviousRunFailed}
+	if len(diffs) == 0 && prev.NoResult {
+		return Reason{Kind: KindNoEarlierResult}
 	}
 	reason := Reason{Kind: KindBinaryChanged, Binary: diffs}
 	if len(diffs) == 0 {

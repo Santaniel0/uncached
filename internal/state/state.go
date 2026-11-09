@@ -62,9 +62,10 @@ type TestRecord struct {
 	Inputs []inputs.Observation `json:"inputs,omitempty"`
 	Binary fingerprint.Test     `json:"binary"`
 	Config fingerprint.Config   `json:"config,omitempty"`
-	// Failed is set when no passing result has been recorded, because the
-	// last run failed.
-	Failed     bool      `json:"failed,omitempty"`
+	// NoResult is set when the test ran but nothing was stored in GOCACHE
+	// for it (it failed, or caching was disabled) and no earlier result
+	// was recorded either.
+	NoResult   bool      `json:"no_result,omitempty"`
 	RecordedAt time.Time `json:"recorded_at"`
 }
 

@@ -29,9 +29,9 @@ const (
 	KindOutsideModule
 	// KindTestFailed: failed results are never stored.
 	KindTestFailed
-	// KindPreviousRunFailed: the last recorded run failed, so there was no
-	// passing result to reuse.
-	KindPreviousRunFailed
+	// KindNoEarlierResult: the last recorded run stored no result (it failed,
+	// or caching was disabled), so there was nothing to reuse.
+	KindNoEarlierResult
 	KindBuildFailed
 	// KindInputTooNew: an input was modified less than two seconds before
 	// cmd/go checked it.
@@ -54,7 +54,7 @@ var kindNames = [...]string{
 	KindLocalDirectoryMode: "local-directory-mode",
 	KindOutsideModule:      "outside-module",
 	KindTestFailed:         "test-failed",
-	KindPreviousRunFailed:  "previous-run-failed",
+	KindNoEarlierResult:    "no-earlier-result",
 	KindBuildFailed:        "build-failed",
 	KindInputTooNew:        "input-too-new",
 	KindTestCacheCleaned:   "testcache-cleaned",

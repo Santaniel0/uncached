@@ -90,7 +90,7 @@ func TestFromRun(t *testing.T) {
 	changedBinary.Binary = fingerprint.Test{Sources: map[ids.ImportPath]string{pkg: "v2"}}
 	failedBefore := record()
 	failedBefore.TestIDs = nil
-	failedBefore.Failed = true
+	failedBefore.NoResult = true
 
 	tests := []struct {
 		name    string
@@ -141,7 +141,7 @@ func TestFromRun(t *testing.T) {
 			debug:   debugLog(lookupLine, listMissing),
 			prev:    prevState(failedBefore),
 			current: record(),
-			want:    []Kind{KindPreviousRunFailed},
+			want:    []Kind{KindNoEarlierResult},
 		},
 		{
 			name:    "mtime-only input change",

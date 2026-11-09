@@ -47,8 +47,12 @@ type Result struct {
 	Files   int
 	Dirs    int
 	Commits int
-	// Skipped lists requested paths that git does not track.
+	// Skipped lists requested paths inside the repository that git does
+	// not track.
 	Skipped []string
+	// Outside counts requested paths outside the repository, such as
+	// temporary directories a test changed into.
+	Outside int
 	// Shallow is set when the repository is a shallow clone.
 	Shallow bool
 }
@@ -81,8 +85,8 @@ func Restore(ctx context.Context, git Git, opts Options) (Result, error) {
 	}
 	slices.Sort(tracked)
 
-	files, dirs, skipped := selectTargets(root, tracked, opts)
-	res.Skipped = skipped
+	files, dirs, skipped, outside := selectTargets(root, tracked, opts)
+	res.Skipped, res.Outside = skipped, outside
 	if len(files) == 0 {
 		return res, nil
 	}
@@ -166,8 +170,9 @@ func chtimes(name string, t time.Time, dryRun bool) (bool, error) {
 
 // selectTargets returns the tracked files and directories to restore, as
 // slash-separated paths relative to root ("." is root itself), plus the
-// requested paths git does not track.
-func selectTargets(root string, tracked []string, opts Options) (files, dirs, skipped []string) {
+// requested paths inside root that git does not track and the number of
+// requested paths outside root.
+func selectTargets(root string, tracked []string, opts Options) (files, dirs, skipped []string, outside int) {
 	fileSet := map[string]bool{}
 	dirSet := map[string]bool{}
 	addFile := func(f string) { fileSet[f] = true }
@@ -205,7 +210,7 @@ func selectTargets(root string, tracked []string, opts Options) (files, dirs, sk
 		for _, p := range opts.Paths {
 			rel, err := filepath.Rel(root, p)
 			if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
-				skipped = append(skipped, p)
+				outside++
 				continue
 			}
 			rel = filepath.ToSlash(rel)
@@ -220,7 +225,7 @@ func selectTargets(root string, tracked []string, opts Options) (files, dirs, sk
 	}
 	files = slices.Sorted(maps.Keys(fileSet))
 	dirs = slices.Sorted(maps.Keys(dirSet))
-	return files, dirs, skipped
+	return files, dirs, skipped, outside
 }
 
 // readLog reads `git log --format=%x01%ct --name-only -z` output, newest
