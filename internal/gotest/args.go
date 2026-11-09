@@ -44,8 +44,10 @@ var valueFlags = map[string]bool{
 }
 
 // keyFlags change the compiled test binary or are part of the test ID
-// (see the cacheable flag list in src/cmd/go/internal/test/test.go).
+// (see the cacheable flag list in src/cmd/go/internal/test/test.go). -json
+// is here because go test turns it into -test.v=test2json.
 var keyFlags = map[string]bool{
+	"json": true,
 	"asan": true, "asmflags": true, "buildmode": true, "compiler": true,
 	"cover": true, "covermode": true, "coverpkg": true, "gccgoflags": true,
 	"gcflags": true, "installsuffix": true, "ldflags": true, "linkshared": true,

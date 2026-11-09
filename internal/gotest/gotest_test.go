@@ -161,6 +161,7 @@ func TestParseArgs(t *testing.T) {
 			name: "bool flags and double dashes",
 			args: []string{"--race", "-v", "-json", "-short=false", "./a", "./b"},
 			flags: []Flag{
+				{"json", "true"},
 				{"race", "true"},
 				{"short", "false"},
 				{"v", "true"},
