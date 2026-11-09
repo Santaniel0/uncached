@@ -544,6 +544,20 @@ func TestExplainAndDiff(t *testing.T) {
 	}
 }
 
+func TestRestoreMtimeWithoutStateIsNotAnError(t *testing.T) {
+	t.Parallel()
+	m := newModule(t, sharedCache, demoFiles)
+	var out bytes.Buffer
+	m.tool.Stdout = &out
+	err := m.tool.RestoreMtime(context.Background(), app.RestoreOptions{StatePath: filepath.Join(t.TempDir(), "none.json")})
+	if err != nil {
+		t.Fatalf("RestoreMtime without state: %v", err)
+	}
+	if !strings.Contains(out.String(), "nothing to restore yet") {
+		t.Errorf("output: %s", out.String())
+	}
+}
+
 func TestExplainWithoutReport(t *testing.T) {
 	t.Parallel()
 	m := newModule(t, sharedCache, demoFiles)

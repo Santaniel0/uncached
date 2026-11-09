@@ -140,7 +140,11 @@ func (t *Tool) RestoreMtime(ctx context.Context, opts RestoreOptions) error {
 		}
 		st, err := state.Load(path)
 		if errors.Is(err, state.ErrNoState) {
-			return fmt.Errorf("%w; run `uncached run` once so it learns which files the tests read, or pass -all", err)
+			// The first CI run has no state yet. Failing here would break that
+			// run for no benefit, since there is nothing to restore anyway.
+			fmt.Fprintf(t.Stdout, "uncached: %v; nothing to restore yet. `uncached run` records which files\n"+
+				"the tests read; -all restores every tracked file instead.\n", err)
+			return nil
 		}
 		if err != nil {
 			return err
