@@ -254,7 +254,7 @@ func describeEntries(entries []inputs.EntryChange) string {
 			}
 		}
 		if len(names) > 0 {
-			parts = append(parts, g.label+" "+strings.Join(names, ", "))
+			parts = append(parts, g.label+": "+strings.Join(names, ", "))
 		}
 	}
 	return strings.Join(parts, "; ")

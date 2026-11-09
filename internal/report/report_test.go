@@ -71,7 +71,7 @@ example.com/m/golden
   test inputs changed, test binary unchanged:
     golden/testdata/a.golden: mtime changed, content identical (2026-11-09 10:00:01 UTC -> 2026-11-09 10:02:13 UTC)
     env REGION: value changed
-    catalog/testdata/: listing changed: added new.json; removed old.json; new mtime, same content sub/
+    catalog/testdata/: listing changed: added: new.json; removed: old.json; new mtime, same content: sub/
 
 example.com/m/invoice
   test binary changed:

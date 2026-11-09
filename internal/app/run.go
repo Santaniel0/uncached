@@ -56,12 +56,10 @@ func (t *Tool) Run(ctx context.Context, opts RunOptions) (int, error) {
 	}
 
 	var notes []explain.Note
+	// A missing state is normal on the first run and FromRun notes it; an
+	// unreadable one is worth a note of its own.
 	prev, err := state.Load(statePath)
-	switch {
-	case errors.Is(err, state.ErrNoState):
-		prev = nil // FromRun notes the missing state itself
-	case err != nil:
-		prev = nil
+	if err != nil && !errors.Is(err, state.ErrNoState) {
 		notes = append(notes, analysisNote("previous state ignored", err))
 	}
 
