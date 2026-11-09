@@ -164,11 +164,13 @@ func (t *Tool) RestoreMtime(ctx context.Context, opts RestoreOptions) error {
 	if opts.DryRun {
 		verb = "would restore"
 	}
-	fmt.Fprintf(t.Stdout, "uncached: %s mtimes of %d files and %d directories from %d commits in %s\n",
-		verb, res.Files, res.Dirs, res.Commits, t.Now().Sub(start).Round(time.Millisecond))
+	fmt.Fprintf(t.Stdout, "uncached: %s mtimes of %s and %s from %s in %s\n",
+		verb, count(res.Files, "file", "files"), count(res.Dirs, "directory", "directories"),
+		count(res.Commits, "commit", "commits"), t.Now().Sub(start).Round(time.Millisecond))
 	if n := len(res.Skipped); n > 0 {
 		shown := res.Skipped[:min(n, 10)]
-		fmt.Fprintf(t.Stdout, "uncached: %d inputs are not tracked by git and keep their mtime: %s", n, strings.Join(shown, ", "))
+		fmt.Fprintf(t.Stdout, "uncached: %s not tracked by git, mtime left as is: %s",
+			count(n, "input is", "inputs are"), strings.Join(shown, ", "))
 		if n > len(shown) {
 			fmt.Fprintf(t.Stdout, ", ...")
 		}
@@ -180,4 +182,11 @@ func (t *Tool) RestoreMtime(ctx context.Context, opts RestoreOptions) error {
 			"(actions/checkout: fetch-depth: 0) for mtimes that stay stable between commits.")
 	}
 	return nil
+}
+
+func count(n int, one, many string) string {
+	if n == 1 {
+		return "1 " + one
+	}
+	return fmt.Sprintf("%d %s", n, many)
 }
