@@ -1,5 +1,7 @@
 # uncached
 
+[![CI](https://github.com/Santaniel0/uncached/actions/workflows/ci.yml/badge.svg)](https://github.com/Santaniel0/uncached/actions/workflows/ci.yml)
+
 `uncached` — обёртка над `go test` для CI. Она запускает тесты как обычно, а
 потом для каждого пакета, который не взялся из тестового кэша (нет `(cached)`),
 пишет, почему: какой исходный файл или версия модуля поменялись, какая
@@ -36,6 +38,8 @@
 `.git`, который трогал `git status` в промпте шелла).
 
 ## Установка
+
+Готовые сборки для Linux, Windows и macOS лежат на странице [Releases](https://github.com/Santaniel0/uncached/releases/latest), Go для них не нужен. Собрать самому через Go:
 
 ```
 go install github.com/Santaniel0/uncached/cmd/uncached@latest
